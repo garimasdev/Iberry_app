@@ -1,20 +1,58 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { TouchableOpacity, SafeAreaView, StatusBar } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
-export default function App() {
+
+import Login from './screens/Login';
+import Orders from './screens/Orders';
+import OutdoorOrders from './screens/OutdoorOrders';
+import Sidebar from './Sidebar';
+
+
+const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
+
+
+//  Drawer Navigator for sidebar
+function DrawerNavigator() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Drawer.Navigator
+      drawerContent={(props) => <Sidebar {...props} />}
+      screenOptions={{headerShown: false,}}>
+      <Drawer.Screen name="DrawerOrders" component={Orders} />
+      <Drawer.Screen name="DrawerOutdoorOrders" component={OutdoorOrders} />
+    </Drawer.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+      <StatusBar barStyle="dark-content" backgroundColor="#f5f5f5" />
+      <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="Login" component={Login}
+          options={{ headerTitle: 'Login' }}
+        />
+        <Stack.Screen 
+            name="Orders" 
+            component={DrawerNavigator} 
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="OutdoorOrders" 
+            component={DrawerNavigator} 
+            options={{
+              headerShown: false,
+            }}
+          />
+      </Stack.Navigator>
+    </NavigationContainer>
+    </SafeAreaView>
+  );
+}

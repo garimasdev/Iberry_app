@@ -118,7 +118,7 @@ const styles = {
     paddingHorizontal: 25,
     borderRadius: 25,
     backgroundColor: '#ddd', 
-    marginHorizontal: 5,
+    marginHorizontal: 8,
     alignItems: 'center',
   },
   activeTab: {
@@ -130,6 +130,7 @@ const styles = {
     textAlign: 'center',
   },
   activeTabText: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#fff', 
   },

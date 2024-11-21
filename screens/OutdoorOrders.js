@@ -10,19 +10,19 @@ const OutdoorOrders = ({navigation}) => {
   const [active, setActive] = useState(0); // Active tab (0 = Pending, 1 = Accepted, 2 = Delivered)
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
-    restaurantOrders: [
-      { orderStatus: 'PENDING', orderDetails: 'Order 1 details' },
-      { orderStatus: 'ACCEPTED', orderDetails: 'Order 2 details' },
-      { orderStatus: 'DELIVERED', orderDetails: 'Order 3 details' },
+    restaurantOutdoorOrders: [
+      { outdoorOrderStatus: 'PENDING', outdoorOrderDetails: 'Outdoor Order 1 details' },
+      { outdoorOrderStatus: 'ACCEPTED', outdoorOrderDetails: 'Outdoor Order 2 details' },
+      { outdoorOrderStatus: 'DELIVERED', outdoorOrderDetails: 'Outdoor Order 3 details' },
     ],
   });
 
-  const renderOrders = (status) => {
-    const orders = data?.restaurantOrders.filter(order => order.orderStatus === status);
-    if (orders && orders.length > 0) {
-      return orders.map((order, index) => (
+  const renderOutdoorOrders = (status) => {
+    const outdoor_orders = data?.restaurantOutdoorOrders.filter(outdoor_orders => outdoor_orders.outdoorOrderStatus === status);
+    if (outdoor_orders && outdoor_orders.length > 0) {
+      return outdoor_orders.map((outdoor_orders, index) => (
         <View key={index} style={styles.card}>
-          <Text>{order.orderDetails}</Text>
+          <Text>{outdoor_orders.outdoorOrderDetails}</Text>
         </View>
       ));
     } else {
@@ -66,9 +66,9 @@ const OutdoorOrders = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-            {active === 0 && renderOrders('PENDING')}
-            {active === 1 && renderOrders('ACCEPTED')}
-            {active === 2 && renderOrders('DELIVERED')}
+            {active === 0 && renderOutdoorOrders('PENDING')}
+            {active === 1 && renderOutdoorOrders('ACCEPTED')}
+            {active === 2 && renderOutdoorOrders('DELIVERED')}
         </View>
       </ScrollView>
     </SafeAreaView>

@@ -22,8 +22,8 @@ function DrawerNavigator() {
     <Drawer.Navigator
       drawerContent={(props) => <Sidebar {...props} />}
       screenOptions={{headerShown: false,}}>
-      <Drawer.Screen name="DrawerOrders" component={Orders} />
       <Drawer.Screen name="DrawerOutdoorOrders" component={OutdoorOrders} />
+      <Drawer.Screen name="DrawerOrders" component={Orders} />
     </Drawer.Navigator>
   );
 }

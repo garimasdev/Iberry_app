@@ -13,11 +13,11 @@ const Sidebar = ({ navigation }) => {
             <MaterialIcons name="menu" size={28} color="#000" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.navigate('Orders')}>
+        <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.navigate('DrawerOrders')}>
             <Text style={styles.sidebarButtonText}>Room Orders</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.replace('OutdoorOrders')} >
+        <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.navigate('DrawerOutdoorOrders')} >
             <Text style={styles.sidebarButtonText}>Outdoor Orders</Text>
         </TouchableOpacity>
 

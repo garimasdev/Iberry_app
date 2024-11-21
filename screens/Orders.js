@@ -11,9 +11,24 @@ const Orders = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     restaurantOrders: [
-      { orderStatus: 'PENDING', orderDetails: 'Order 1 details' },
-      { orderStatus: 'ACCEPTED', orderDetails: 'Order 2 details' },
-      { orderStatus: 'DELIVERED', orderDetails: 'Order 3 details' },
+      { 
+        orderId: 'ORD001', 
+        orderStatus: 'PENDING', 
+        paymentMode: 'Credit Card', 
+        totalAmount: '$25.50' 
+      },
+      { 
+        orderId: 'ORD002', 
+        orderStatus: 'ACCEPTED', 
+        paymentMode: 'Cash', 
+        totalAmount: '$40.00' 
+      },
+      { 
+        orderId: 'ORD003', 
+        orderStatus: 'DELIVERED', 
+        paymentMode: 'PayPal', 
+        totalAmount: '$15.30' 
+      },
     ],
   });
 
@@ -22,8 +37,15 @@ const Orders = ({navigation}) => {
     if (orders && orders.length > 0) {
       return orders.map((order, index) => (
         <View key={index} style={styles.card}>
-          <Text>{order.orderDetails}</Text>
-        </View>
+          {/* Order ID */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Order ID: </Text>{order.orderId}</Text>
+          
+          {/* Payment Mode */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Payment Mode: </Text>{order.paymentMode}</Text>
+          
+          {/* Total Amount */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{order.totalAmount}</Text>
+      </View>
       ));
     } else {
       return (
@@ -139,14 +161,23 @@ const styles = {
   },
   card: {
     backgroundColor: '#fff',
-    marginBottom: 15,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    marginTop: 15,
+    marginBottom: 5,
+    padding: 20,
+    borderColor: '#4154f1',
+    borderRadius: 15,
+    shadowColor: '#4154f1',
+    shadowOffset: { width: 5, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  orderText: {
+    fontSize: 16,
+    color: '#333',
+    marginVertical: 3,
   },
   noOrdersContainer: {
     justifyContent: 'center',

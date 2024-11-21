@@ -10,7 +10,7 @@ const Sidebar = ({ navigation }) => {
   return (
     <View style={styles.sidebarContainer}>
         <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.toggleDrawer()}>
-            <MaterialIcons name="menu" size={28} color="#000" />
+            <MaterialIcons name="menu" size={30} color="white" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.sidebarButton} onPress={() => navigation.navigate('DrawerOrders')}>

@@ -11,10 +11,25 @@ const OutdoorOrders = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     restaurantOutdoorOrders: [
-      { outdoorOrderStatus: 'PENDING', outdoorOrderDetails: 'Outdoor Order 1 details' },
-      { outdoorOrderStatus: 'ACCEPTED', outdoorOrderDetails: 'Outdoor Order 2 details' },
-      { outdoorOrderStatus: 'DELIVERED', outdoorOrderDetails: 'Outdoor Order 3 details' },
-    ],
+        { 
+          outdoorOrderId: 'ORD001', 
+          outdoorOrderStatus: 'PENDING', 
+          paymentMode: 'Credit Card', 
+          totalAmount: '$25.50' 
+        },
+        { 
+          outdoorOrderId: 'ORD002', 
+          outdoorOrderStatus: 'ACCEPTED', 
+          paymentMode: 'Cash', 
+          totalAmount: '$40.00' 
+        },
+        { 
+          outdoorOrderId: 'ORD003', 
+          outdoorOrderStatus: 'DELIVERED', 
+          paymentMode: 'PayPal', 
+          totalAmount: '$15.30' 
+        },
+      ],
   });
 
   const renderOutdoorOrders = (status) => {
@@ -22,8 +37,15 @@ const OutdoorOrders = ({navigation}) => {
     if (outdoor_orders && outdoor_orders.length > 0) {
       return outdoor_orders.map((outdoor_orders, index) => (
         <View key={index} style={styles.card}>
-          <Text>{outdoor_orders.outdoorOrderDetails}</Text>
-        </View>
+          {/* Order ID */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Outdoor Order ID: </Text>{outdoor_orders.outdoorOrderId}</Text>
+          
+          {/* Payment Mode */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Payment Mode: </Text>{outdoor_orders.paymentMode}</Text>
+          
+          {/* Total Amount */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{outdoor_orders.totalAmount}</Text>
+      </View>
       ));
     } else {
       return (
@@ -83,7 +105,6 @@ const styles = {
   header: {
     height: 60,
     backgroundColor: '#4154f1',
-    // justifyContent: 'center',
     paddingLeft: 15,
     flexDirection: 'row',
     alignItems: 'center',
@@ -138,14 +159,22 @@ const styles = {
   },
   card: {
     backgroundColor: '#fff',
-    marginBottom: 15,
-    padding: 15,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    marginTop: 15,
+    marginBottom: 5,
+    padding: 20,
+    borderRadius: 15,
+    shadowColor: '#4154f1',
+    shadowOffset: { width: 5, height: 10 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  orderText: {
+      fontSize: 16,
+      color: '#333',
+      marginVertical: 3,
   },
   noOrdersContainer: {
     justifyContent: 'center',

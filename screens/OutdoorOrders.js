@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import OutdoorOrderDetails from './OutdoorOrderDetails';
 
 
 const { width, height } = Dimensions.get('window');
@@ -40,7 +40,8 @@ const OutdoorOrders = ({navigation}) => {
       return repeatedOrders.map((outdoor_orders, index) => (
         <View key={index} style={styles.card}>
             {/* Arrow Icon at the top-right */}
-            <TouchableOpacity style={styles.arrowIcon}>
+            <TouchableOpacity style={styles.arrowIcon}
+            onPress={() => navigation.replace('OutdoorOrderDetails', { outdoorOrderId: outdoor_orders.outdoorOrderId })}>
                 <MaterialIcons name="keyboard-arrow-right" size={30} color="#4154f1" />
             </TouchableOpacity>
 

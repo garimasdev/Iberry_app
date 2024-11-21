@@ -10,6 +10,7 @@ import Login from './screens/Login';
 import Orders from './screens/Orders';
 import RoomOrderDetails from './screens/RoomOrderDetails';
 import OutdoorOrders from './screens/OutdoorOrders';
+import OutdoorOrderDetails from './screens/OutdoorOrderDetails';
 import Sidebar from './Sidebar';
 
 
@@ -39,6 +40,7 @@ export default function App() {
           <Stack.Screen name="Orders" component={DrawerNavigator} options={{headerShown: false, gestureEnabled: true,}}/>
           <Stack.Screen name="RoomOrderDetails" component={RoomOrderDetails} options={{ headerShown: false, gestureEnabled: true, }}/>
           <Stack.Screen name="OutdoorOrders" component={DrawerNavigator} options={{headerShown: false, gestureEnabled: true,}}/>
+          <Stack.Screen name="OutdoorOrderDetails" component={OutdoorOrderDetails} options={{ headerShown: false, gestureEnabled: true, }}/>
         </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaView>

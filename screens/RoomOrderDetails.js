@@ -7,10 +7,24 @@ import { Picker } from '@react-native-picker/picker';
 
 const RoomOrderDetails = ({ route, navigation }) => {
     const { orderId } = route.params;
-    const [status, setStatus] = useState('PENDING');
+    const [status, setStatus] = useState('ACTIVE');
 
     const handleStatusChange = (value) => {
         setStatus(value);
+    };
+
+    // Dynamic style based on the selected value
+    const getSelectedTextStyle = () => {
+        switch (status) {
+        case "PROCESSING":
+            return { color: '#FFA500', fontWeight: 'bold' };  // Orange for Processing
+        case "COMPLETE":
+            return { color: '#26a318', fontWeight: 'bold' };  // Green for Complete
+        case "CANCEL":
+            return { color: '#FF6347', fontWeight: 'bold' };  // Red for Cancel
+        default:
+            return { color: '#000', fontWeight: 'normal' };    // Default style
+        }
     };
 
 
@@ -62,17 +76,16 @@ const RoomOrderDetails = ({ route, navigation }) => {
             </View>
     
             <View style={styles.statusContainer}>
-                <Text style={styles.orderText}>
-                    <Text style={styles.bold}>Current Status: </Text>{status}
+                <Text style={styles.orderText}  style={getSelectedTextStyle()}>
+                    <Text style={styles.sectionTitle}>Current Status: </Text>{status}
                 </Text>
 
                 {/* Picker for selecting status */}
                 <View style={styles.pickerContainer}>
-                <Text style={styles.label}>Change Status:</Text>
                 <Picker selectedValue={status} onValueChange={handleStatusChange} style={styles.picker}>
-                    <Picker.Item label="Processing" value="PROCESSING" />
-                    <Picker.Item label="Complete" value="COMPLETE" />
-                    <Picker.Item label="Cancel" value="CANCEL" />
+                    <Picker.Item label="PROCESSING" value="PROCESSING" /> 
+                    <Picker.Item label="COMPLETE" value="COMPLETE" />    
+                    <Picker.Item label="CANCEL" value="CANCEL" />  
                 </Picker>
                 </View>
             </View>
@@ -90,7 +103,7 @@ const RoomOrderDetails = ({ route, navigation }) => {
     sidebarHeader: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#007bff',
+      backgroundColor: '#4154f1',
       paddingVertical: 15,
       paddingHorizontal: 10,
       borderRadius: 8,
@@ -181,7 +194,7 @@ const RoomOrderDetails = ({ route, navigation }) => {
       shadowRadius: 4,
     },
     orderText: {
-      fontSize: 16,
+      fontSize: 25,
       color: '#343a40',
       marginBottom: 10,
     },
@@ -189,21 +202,22 @@ const RoomOrderDetails = ({ route, navigation }) => {
       fontWeight: 'bold',
     },
     pickerContainer: {
-      marginTop: 10,
+      marginTop: 5,
     },
     label: {
-      fontSize: 16,
+      fontSize: 14,
       marginBottom: 5,
       color: '#495057',
     },
     picker: {
-      height: 50,
+      height: 60,
       width: '100%',
       borderColor: '#ced4da',
       borderWidth: 1,
-      borderRadius: 4,
+      borderRadius: 6,
       backgroundColor: '#fff',
       paddingHorizontal: 10,
+      fontSize: 12,
     },
   });
 export default RoomOrderDetails;

@@ -34,27 +34,34 @@ const OutdoorOrders = ({navigation}) => {
 
   const renderOutdoorOrders = (status) => {
     const outdoor_orders = data?.restaurantOutdoorOrders.filter(outdoor_orders => outdoor_orders.outdoorOrderStatus === status);
-    if (outdoor_orders && outdoor_orders.length > 0) {
-      return outdoor_orders.map((outdoor_orders, index) => (
+    const repeatedOrders = [...outdoor_orders, ...outdoor_orders, ...outdoor_orders];
+    
+    if (repeatedOrders && repeatedOrders.length > 0) {
+      return repeatedOrders.map((outdoor_orders, index) => (
         <View key={index} style={styles.card}>
-          {/* Order ID */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Outdoor Order ID: </Text>{outdoor_orders.outdoorOrderId}</Text>
-          
-          {/* Payment Mode */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Payment Mode: </Text>{outdoor_orders.paymentMode}</Text>
-          
-          {/* Total Amount */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{outdoor_orders.totalAmount}</Text>
-      </View>
-      ));
-    } else {
-      return (
-        <View style={styles.noOrdersContainer}>
-          <Text style={styles.noOrdersText}>No Outdoor Orders Available</Text>
+            {/* Arrow Icon at the top-right */}
+            <TouchableOpacity style={styles.arrowIcon}>
+                <MaterialIcons name="keyboard-arrow-right" size={30} color="#4154f1" />
+            </TouchableOpacity>
+
+            {/* Order ID */}
+            <Text style={styles.orderText}><Text style={styles.bold}>Outdoor Order ID: </Text>{outdoor_orders.outdoorOrderId}</Text>
+            
+            {/* Payment Mode */}
+            <Text style={styles.orderText}><Text style={styles.bold}>Payment Mode: </Text>{outdoor_orders.paymentMode}</Text>
+            
+            {/* Total Amount */}
+            <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{outdoor_orders.totalAmount}</Text>
         </View>
-      );
-    }
-  };
+        ));
+        } else {
+        return (
+            <View style={styles.noOrdersContainer}>
+            <Text style={styles.noOrdersText}>No Outdoor Orders Available</Text>
+            </View>
+        );
+        }
+    };
 
   
   return (
@@ -69,7 +76,7 @@ const OutdoorOrders = ({navigation}) => {
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.mainContainer}>
-          <View style={styles.tabContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabContainer}>
             <TouchableOpacity style={[styles.tab, active === 0 && styles.activeTab]} onPress={() => setActive(0)}>
               <Text style={[styles.tabText, active === 0 && styles.activeTabText]}>
                 Active
@@ -87,7 +94,7 @@ const OutdoorOrders = ({navigation}) => {
                 Delivered
               </Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
             {active === 0 && renderOutdoorOrders('PENDING')}
             {active === 1 && renderOutdoorOrders('ACCEPTED')}
             {active === 2 && renderOutdoorOrders('DELIVERED')}
@@ -131,7 +138,7 @@ const styles = {
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     marginBottom: 20,
   },
   tab: {
@@ -170,6 +177,13 @@ const styles = {
     elevation: 5,
     borderWidth: 1,
     borderColor: '#ddd',
+    position: 'relative',
+  },
+  arrowIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
   orderText: {
       fontSize: 16,

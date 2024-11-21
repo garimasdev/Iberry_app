@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import RoomOrderDetails from './RoomOrderDetails';
 
 
 
@@ -36,7 +37,13 @@ const Orders = ({navigation}) => {
     const orders = data?.restaurantOrders.filter(order => order.orderStatus === status);
     if (orders && orders.length > 0) {
       return orders.map((order, index) => (
-        <View key={index} style={styles.card}>
+      <View key={index} style={styles.card}>
+          {/* Arrow Icon at the top-right */}
+          <TouchableOpacity style={styles.arrowIcon}
+          onPress={() => navigation.replace('RoomOrderDetails', { orderId: order.orderId })}>
+            <MaterialIcons name="keyboard-arrow-right" size={30} color="#4154f1" />
+          </TouchableOpacity>
+            
           {/* Order ID */}
           <Text style={styles.orderText}><Text style={styles.bold}>Order ID: </Text>{order.orderId}</Text>
           
@@ -69,7 +76,7 @@ const Orders = ({navigation}) => {
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.mainContainer}>
-          <View style={styles.tabContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.tabContainer}>
             <TouchableOpacity style={[styles.tab, active === 0 && styles.activeTab]} onPress={() => setActive(0)}>
               <Text style={[styles.tabText, active === 0 && styles.activeTabText]}>
                 Active
@@ -87,7 +94,7 @@ const Orders = ({navigation}) => {
                 Delivered
               </Text>
             </TouchableOpacity>
-          </View>
+          </ScrollView>
             {active === 0 && renderOrders('PENDING')}
             {active === 1 && renderOrders('ACCEPTED')}
             {active === 2 && renderOrders('DELIVERED')}
@@ -105,7 +112,6 @@ const styles = {
   header: {
     height: 60,
     backgroundColor: '#4154f1',
-    // justifyContent: 'center',
     paddingLeft: 15,
     flexDirection: 'row',
     alignItems: 'center',
@@ -132,7 +138,7 @@ const styles = {
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'flex-start',
     marginBottom: 20,
   },
   tab: {
@@ -173,6 +179,13 @@ const styles = {
     elevation: 5,
     borderWidth: 1,
     borderColor: '#ddd',
+    position: 'relative',
+  },
+  arrowIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
   },
   orderText: {
     fontSize: 16,

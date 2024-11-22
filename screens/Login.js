@@ -1,33 +1,49 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-
+import axios from 'axios';
 
 const Login = ({ navigation }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [hotelname, setHotelName] = useState('');
   
-    // Fake credentials
-    const fakeCredentials = {
-        username: 'Abc',
-        password: '12',
-    };
+    const API_URL = 'https://qr.nukadscan.com/dashboard/staff/users/authenticate';
+    const handleLogin = async () => {
+        try {
+            const response = await axios.post(API_URL, {
+                hotelname: hotelname,
+                username: username,            // Send staff username
+                password: password,            // Send password
+            });
 
-    const handleLogin = () => {
-        // Check fake login
-        if (username === fakeCredentials.username && password === fakeCredentials.password) {
-        navigation.replace('Orders');
-        } else {
-        Alert.alert('Invalid credentials', 'Please check your username and password');
+            // Check the status from the server response
+            if (response.data.status) {
+                // Authentication successful
+                navigation.replace('Orders');
+            } else {
+                // Authentication failed
+                Alert.alert('Login failed', response.data.message || 'Invalid credentials');
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error', 'An error occurred while connecting to the server');
         }
-};
-
+    };
 
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
         <Text style={styles.heading}>Login</Text>
       </View>
-      
+
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Hotel Name"
+        placeholderTextColor="#B0B0B0"
+        value={hotelname}
+        onChangeText={setHotelName}
+      />
+
 
       <TextInput
         style={styles.input}

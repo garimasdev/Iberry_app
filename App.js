@@ -19,13 +19,21 @@ const Drawer = createDrawerNavigator();
 
 
 //  Drawer Navigator for sidebar
-function DrawerNavigator() {
+function DrawerNavigator({ route }) {
+  const { hotelName } = route.params;
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => <Sidebar {...props} />}
-      screenOptions={{headerShown: false, gestureEnabled: true,}}>
-      <Drawer.Screen name="DrawerOrders" component={Orders} />
-      <Drawer.Screen name="DrawerOutdoorOrders" component={OutdoorOrders} />
+      screenOptions={{ headerShown: false, gestureEnabled: true }}
+    >
+      {/* Pass hotel_name to the Orders screen and other screens */}
+      <Drawer.Screen name="DrawerOrders">
+        {(props) => <Orders {...props} hotelName={hotelName} />}
+      </Drawer.Screen>
+      <Drawer.Screen name="DrawerOutdoorOrders">
+        {(props) => <OutdoorOrders {...props} hotelName={hotelName} />}
+      </Drawer.Screen>
     </Drawer.Navigator>
   );
 }

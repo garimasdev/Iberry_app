@@ -2,39 +2,52 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Dimensions, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import RoomOrderDetails from './RoomOrderDetails';
+import axios from 'axios'; 
 
 
 
 const { width, height } = Dimensions.get('window');
 
-const Orders = ({navigation}) => {
+const Orders = ({navigation, hotelName}) => {
   const [active, setActive] = useState(0); // Active tab (0 = Pending, 1 = Accepted, 2 = Delivered)
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState({
-    restaurantOrders: [
-      { 
-        orderId: 'ORD001', 
-        orderStatus: 'PENDING', 
-        paymentMode: 'Credit Card', 
-        totalAmount: '$25.50' 
-      },
-      { 
-        orderId: 'ORD002', 
-        orderStatus: 'ACCEPTED', 
-        paymentMode: 'Cash', 
-        totalAmount: '$40.00' 
-      },
-      { 
-        orderId: 'ORD003', 
-        orderStatus: 'DELIVERED', 
-        paymentMode: 'PayPal', 
-        totalAmount: '$15.30' 
-      },
-    ],
-  });
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
+  const API_URL = "https://qr.nukadscan.com/dashboard/app/foods/orders";
 
+  // Fetch orders data from the backend
+  const fetchOrders = async () => {
+    setLoading(true); // Set loading to true while fetching data
+    
+    try {
+      const response = await axios.get(`${API_URL}?hotel_name=${hotelName}`);
+
+      if (response.data && Array.isArray(response.data.data)) {
+        setData(response.data.data);
+      } else {
+        console.error("Invalid data format:", response.data);
+        setData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setData([]);
+    } finally {
+      setLoading(false); 
+    }
+  };
+
+  // Fetch orders when the component mounts
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+  
+  
   const renderOrders = (status) => {
-    const orders = data?.restaurantOrders.filter(order => order.orderStatus === status);
+    if (!Array.isArray(data)) {
+      console.error("Data is not an array");
+      return null;
+    }
+    const orders = data.filter(order => order.status === status);
     if (orders && orders.length > 0) {
       return orders.map((order, index) => (
       <View key={index} style={styles.card}>
@@ -46,12 +59,12 @@ const Orders = ({navigation}) => {
             
           {/* Order ID */}
           <Text style={styles.orderText}><Text style={styles.bold}>Order ID: </Text>{order.orderId}</Text>
-          
           {/* Payment Mode */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Payment Mode: </Text>{order.paymentMode}</Text>
-          
+          <Text style={styles.orderText}><Text style={styles.bold}>Room Number: </Text>{order.room_number}</Text>
           {/* Total Amount */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{order.totalAmount}</Text>
+          <Text style={styles.orderText}><Text style={styles.bold}>Total Amount: </Text>{order.total_price}</Text>
+          {/* Status */}
+          <Text style={styles.orderText}><Text style={styles.bold}>Status: </Text>{order.status}</Text>
       </View>
       ));
     } else {
@@ -91,13 +104,20 @@ const Orders = ({navigation}) => {
 
             <TouchableOpacity style={[styles.tab, active === 2 && styles.activeTab]} onPress={() => setActive(2)}>
               <Text style={[styles.tabText, active === 2 && styles.activeTabText]}>
-                Delivered
+                Completed
               </Text>
             </TouchableOpacity>
           </ScrollView>
-            {active === 0 && renderOrders('PENDING')}
-            {active === 1 && renderOrders('ACCEPTED')}
-            {active === 2 && renderOrders('DELIVERED')}
+            {/* Render orders based on active tab */}
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <>
+              {active === 0 && renderOrders('Ordered')}
+              {active === 1 && renderOrders('Processing')}
+              {active === 2 && renderOrders('Completed')}
+            </>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

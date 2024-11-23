@@ -8,20 +8,23 @@ const Login = ({ navigation }) => {
     const [hotelname, setHotelName] = useState('');
   
     const API_URL = 'https://qr.nukadscan.com/dashboard/staff/users/authenticate';
+
     const handleLogin = async () => {
+        if (!hotelname || !username || !password) {
+            Alert.alert('Error', 'Please fill out all fields');
+        }
+
         try {
             const response = await axios.post(API_URL, {
                 hotelname: hotelname,
-                username: username,            // Send staff username
-                password: password,            // Send password
+                username: username,
+                password: password,
             });
 
-            // Check the status from the server response
+            // Check the server status response
             if (response.data.status) {
-                // Authentication successful
-                navigation.replace('Orders');
+                navigation.navigate('Orders', { hotelName: hotelname });
             } else {
-                // Authentication failed
                 Alert.alert('Login failed', response.data.message || 'Invalid credentials');
             }
         } catch (error) {

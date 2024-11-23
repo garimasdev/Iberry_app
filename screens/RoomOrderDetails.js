@@ -2,50 +2,88 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, StyleSheet, TextInput, SafeAreaView } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-
+import axios from 'axios';
 
 
 const RoomOrderDetails = ({ route, navigation }) => {
-    const { orderId } = route.params;
+    const { orderId, hotelName } = route.params;
+    const [orderData, setOrderData] = useState([]);
+    const [loading, setLoading] = useState(true); 
     const [status, setStatus] = useState('ACTIVE');
 
+    // update the status when picker value changes
     const handleStatusChange = (value) => {
-        setStatus(value);
+      setStatus(value); 
     };
 
-    // Dynamic style based on the selected value
-    const getSelectedTextStyle = () => {
-        switch (status) {
-        case "PROCESSING":
-            return { color: '#FFA500', fontWeight: 'bold' };  // Orange for Processing
-        case "COMPLETE":
-            return { color: '#26a318', fontWeight: 'bold' };  // Green for Complete
-        case "CANCEL":
-            return { color: '#FF6347', fontWeight: 'bold' };  // Red for Cancel
-        default:
-            return { color: '#000', fontWeight: 'normal' };    // Default style
-        }
-    };
+    const API_URL = `https://qr.nukadscan.com/dashboard/app/foods/orders/${orderId}`;
+
+     // Fetch order details from the API
+     useEffect(() => {
+      const fetchOrderDetails = async () => {
+          try {
+              const response = await axios.post(API_URL, { 
+                  hotel_name: hotelName 
+              });
+              console.log('data', response.data);
+
+              if (response.data && response.data.data) {
+                  setOrderData(response.data.data);  // Set order data from response
+                  setStatus(response.data.data[0]?.status || 'ACTIVE');
+              } else {
+                  console.error("Invalid data:", response.data);
+                  Alert.alert('Error', 'Failed to load order details');
+              }
+          } catch (error) {
+              console.error("Error fetching order details:", error);
+              Alert.alert('Error', 'Failed to fetch order details');
+          } finally {
+              setLoading(false);  // Set loading to false once data is fetched
+          }
+      };
+
+      fetchOrderDetails();
+  }, [orderId, hotelName]);  // Re-run the effect when orderId or hotelName changes
 
 
-    // mock data
-    const orderData = {
-      orderId: orderId,
-      orderItems: [
-        { name: 'Burger', quantity: 2, price: '$5.00' },
-        { name: 'Fries', quantity: 1, price: '$2.50' },
-        { name: 'Soda', quantity: 1, price: '$1.00' },
-      ],
-      instructions: 'No pickles on the burger.',
-      status: 'PENDING',
-      orderTime: '2024-11-20 12:00 PM',
-    };
+  // Dynamic style based on the selected value
+  const getSelectedTextStyle = () => {
+    switch (status) {
+    case "PROCESSING":
+        return { color: '#FFA500', fontWeight: 'bold' };  // Orange for Processing
+    case "COMPLETE":
+        return { color: '#26a318', fontWeight: 'bold' };  // Green for Complete
+    case "CANCEL":
+        return { color: '#FF6347', fontWeight: 'bold' };  // Red for Cancel
+    default:
+        return { color: '#000', fontWeight: 'normal' };    // Default style
+    }
+};
+
+  // Loading indicator
+  if (loading) {
+      return (
+          <SafeAreaView style={styles.container}>
+              <Text>Loading...</Text>
+          </SafeAreaView>
+      );
+  }
+
+  // If no data is fetched, display an error message
+  if (!orderData || orderData.length === 0) {
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text>No order data available.</Text>
+        </SafeAreaView>
+    );
+}
+
   
     return (
     <SafeAreaView style={styles.container}>
         {/* header with hamburger icon */}
         <View style={styles.sidebarHeader}>
-            <TouchableOpacity onPress={() => navigation.replace('Orders')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Orders', {hotelName: hotelName})}>
                 <FontAwesome name="arrow-left" size={30} color="#fff" padding="2" />
             </TouchableOpacity>
             <Text style={styles.sidebarHeaderTitle}>Room Orders Details</Text>
@@ -54,25 +92,39 @@ const RoomOrderDetails = ({ route, navigation }) => {
         <ScrollView style={styles.scrollView}>
             {/* Order Header */}
             <View style={styles.header}>
-                <Text style={styles.orderId}>Order ID: {orderData.orderId}</Text>
-                <Text style={styles.orderTime}>Order Time: {orderData.orderTime}</Text>
+                <Text style={styles.orderId}>Order ID: {orderId}</Text>
+                <Text style={styles.orderTime}>Order Time: {orderData[0].time}</Text>
+                <Text style={styles.roomNumber}>Room Number: {orderData[0].room_number}</Text>
             </View>
     
             {/* Order Items */}
             <View style={styles.orderItemsContainer}>
                 <Text style={styles.sectionTitle}>Order Items</Text>
-                {orderData.orderItems.map((item, index) => (
-                    <View key={index} style={styles.item}>
-                        <Text style={styles.itemText}>{item.name} (x{item.quantity})</Text>
-                        <Text style={styles.itemPrice}>{item.price}</Text>
-                    </View>
-                ))}
-            </View>
+                {orderData && orderData.length > 0 ? (
+                    orderData.map((item, index) => (
+                        <View key={index} style={styles.item}>
+                          <View style={styles.itemDetails}>
+                            <Text style={styles.itemText}>{item.item_name} (x{item.quantity})</Text>
+                            <Text style={styles.itemQuantity}>Qty: {item.quantity}</Text>
+                          </View>
+                            <Text style={styles.itemPrice}>${item.price}</Text>
+                        </View>
+                        // <Text style={[styles.totalContainer, styles.totalText]}>Total: ${item.total_price}</Text>
+
+                    ))
+                ) : (
+                    <Text>No items found</Text>
+                )}
+                </View>
+
+
     
             {/* Instructions */}
             <View style={styles.instructionsContainer}>
                 <Text style={styles.sectionTitle}>User Instructions</Text>
-                <Text style={styles.instructions}>{orderData.instructions}</Text>
+                <Text style={styles.instructions}>
+                  {orderData.instruction ? orderData.instruction : 'No instructions'}
+                </Text>
             </View>
     
             <View style={styles.statusContainer}>
@@ -130,13 +182,18 @@ const RoomOrderDetails = ({ route, navigation }) => {
       marginBottom: 16,
     },
     orderId: {
-      fontSize: 18,
-      fontWeight: '600',
+      fontSize: 20,
+      fontWeight: 'bold',
       color: '#343a40', 
     },
     orderTime: {
-      fontSize: 14,
+      fontSize: 16,
       color: '#6c757d', 
+      marginBottom: 15,
+    },
+    roomNumber: {
+      fontSize: 20,
+      fontWeight: '600'
     },
     orderItemsContainer: {
       backgroundColor: '#fff',
@@ -149,8 +206,8 @@ const RoomOrderDetails = ({ route, navigation }) => {
       shadowRadius: 4,
     },
     sectionTitle: {
-      fontSize: 18,
-      fontWeight: '600',
+      fontSize: 20,
+      fontWeight: 'bold',
       marginBottom: 8,
       color: '#007bff', 
     },
@@ -165,10 +222,25 @@ const RoomOrderDetails = ({ route, navigation }) => {
       fontSize: 16,
       color: '#495057', // Dark grey for item text
     },
+    itemQuantity: {
+      fontSize: 16,
+      color: '#495057',
+    },
     itemPrice: {
       fontSize: 16,
       fontWeight: 'bold',
       color: '#28a745', // Green for price
+    },
+    totalContainer: {
+      marginTop: 10,
+      borderTopWidth: 1,
+      borderTopColor: '#e9ecef',
+      paddingTop: 10,
+    },
+    totalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#343a40',
     },
     instructionsContainer: {
       backgroundColor: '#fff',

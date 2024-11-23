@@ -53,12 +53,12 @@ const Orders = ({navigation, hotelName}) => {
       <View key={index} style={styles.card}>
           {/* Arrow Icon at the top-right */}
           <TouchableOpacity style={styles.arrowIcon}
-          onPress={() => navigation.replace('RoomOrderDetails', { orderId: order.orderId })}>
+          onPress={() => navigation.navigate('RoomOrderDetails', { orderId: order.order_id, hotelName: hotelName })}>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#4154f1" />
           </TouchableOpacity>
             
           {/* Order ID */}
-          <Text style={styles.orderText}><Text style={styles.bold}>Order ID: </Text>{order.orderId}</Text>
+          <Text style={styles.orderText}><Text style={styles.bold}>Order ID: </Text>{order.order_id}</Text>
           {/* Payment Mode */}
           <Text style={styles.orderText}><Text style={styles.bold}>Room Number: </Text>{order.room_number}</Text>
           {/* Total Amount */}

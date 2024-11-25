@@ -83,9 +83,9 @@ const RoomOrderDetails = ({ route, navigation }) => {
     <SafeAreaView style={styles.container}>
         {/* header with hamburger icon */}
         <View style={styles.sidebarHeader}>
-            <TouchableOpacity onPress={() => navigation.navigate('Orders', {hotelName: hotelName})}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('Orders', {hotelName: hotelName})}>
                 <FontAwesome name="arrow-left" size={30} color="#fff" padding="2" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={styles.sidebarHeaderTitle}>Room Orders Details</Text>
         </View>
 
